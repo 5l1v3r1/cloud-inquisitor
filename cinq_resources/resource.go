@@ -4,25 +4,26 @@ type Action = byte
 
 const (
 	ACTION_ERROR Action = iota
-	ACTION_NOTIFY 
-	ACTION_PREVENT 
+	ACTION_NOTIFY
+	ACTION_PREVENT
 	ACTION_REMOVE
 )
 
-// Resource is an interaface that vaugely describes a 
+// Resource is an interaface that vaugely describes a
 // cloud resource and what actions would be necessary to both
 // collect information on the resource, audit and remediate it,
 // and report the end result
-type Resource interface{
+type Resource interface {
+	New(interface{})
 	// Audit determines if the current state of the struct
 	// meets criteria for a given action
 	Audit() (Action, error)
-	// PublishState is provided to give an easy hook to 
+	// PublishState is provided to give an easy hook to
 	// send and store struct state in a backend data store
 	PublishState() error
 	// RefreshState is provided to give an easy hook to
-	// retrieve current resource information from the 
-	// cloud provider of choice 
+	// retrieve current resource information from the
+	// cloud provider of choice
 	RefreshState() error
 	// SendLogs is provided to give an easy hook for bulk
 	// sending logs or other information to logging endpoints
@@ -30,19 +31,19 @@ type Resource interface{
 	SendLogs() error
 	// SendMetrics is provided to give an easy hook for
 	// uploading application metrics to a metrics collector
-	// if this is not taken care of already by the implementation 
-	SendMetrics() error 
+	// if this is not taken care of already by the implementation
+	SendMetrics() error
 	// SendNotification is provided to give an easy hook for
 	// implementing various methods for sending status updates
 	// via any medium
 	SendNotification() error
-	// TakeAction is provided to give an easy hook for 
-	// taking custom actions against resources based on 
+	// TakeAction is provided to give an easy hook for
+	// taking custom actions against resources based on
 	TakeAction(Action) error
 }
 
 // TaggableResource is an interface which introduces
-// GetTags and GetMissingTags for a given resource 
+// GetTags and GetMissingTags for a given resource
 // Specifically for Auditing resource which can have a tag
 type TaggableResource interface {
 	Resource
